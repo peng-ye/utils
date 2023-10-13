@@ -403,8 +403,8 @@ write.tsv <- function(df, file) {
   write.table(df, file, sep = "\t", col.names = NA, quote = F)
 }
 
-read.tsv <- function(file, row.names=1) {
-  read.table(file, sep = "\t", row.names = row.names, header = T, check.names = F)
+read.tsv <- function(file, row.names=1, header=T) {
+  read.table(file, sep = "\t", row.names = row.names, header = header, check.names = F)
 }
 
 # pdf to png
