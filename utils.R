@@ -376,11 +376,16 @@ format_p_list <- function(x) {
 	return(sapply(x, format_p))
 }
 
+# return the last n characters
 substrRight <- function(x, n){
   substr(x, nchar(x)-n+1, nchar(x))
 }
 # https://stackoverflow.com/questions/7963898/extracting-the-last-n-characters-from-a-string-in-r
-		   
+
+# remove the last n characters
+rmstrRight <- function(x, n){
+  substr(x, 1, nchar(x)-n)
+}
 ## text processing for metaphlan profiles
 get_species_name <- function(x) {
   if (is.character(x)) {
