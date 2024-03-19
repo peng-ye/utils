@@ -455,8 +455,8 @@ c("#E69F00", # orange
 
 
 # I/O
-write.tsv <- function(df, file) {
-  write.table(df, file, sep = "\t", col.names = NA, quote = F)
+write.tsv <- function(df, file, ...) {
+  write.table(df, file, sep = "\t", col.names = NA, quote = F, ...)
 }
 
 read.tsv <- function(file, row.names=1, header=T, check.names = F, quote=c(""), as.is=T, ...) {
