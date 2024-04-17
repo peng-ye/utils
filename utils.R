@@ -214,7 +214,7 @@ n.prop <- function(x, group=1, x.lab="", group.lab="") {
   return(res)
 }
 
-n.prop.fisher.raw_p <- function(x, group=1, x.lab="", group.lab="", to_return="all") {
+n.prop.fisher.raw_p <- function(x, group=1, x.lab="", group.lab="", to_return="all", simulate.p.value = F) {
   if(length(unique(group))==1) {
     res <- data.frame(name=names(table(x)), stats=paste0(table(x), " (", round(prop.table(table(x))*100, 1), ")"))
     return(res)
@@ -230,7 +230,7 @@ n.prop.fisher.raw_p <- function(x, group=1, x.lab="", group.lab="", to_return="a
   if (nrow(tb)==1) {
     p <- 1
   } else {
-    p <- fisher.test(tb)$p.value
+    p <- fisher.test(tb, simulate.p.value=simulate.p.value)$p.value
   }
   
   res$fisher.p <- p
