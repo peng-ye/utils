@@ -103,6 +103,18 @@ median_iqr_group_wilcoxon.raw_p <- function(x, group, prefix="", exact=T, paired
   return(res)
 }
 
+median_iqr_group_wilcoxon.raw_p.fdr.matrix <- function(mat, groups) {
+  # mat: samples in rows, features in columns
+  results <- c()
+  for (i in colnames(mat)) {
+    x <- as.vector(mat[,i])
+    result <- median_iqr_group_wilcoxon.raw_p(x, groups)
+    results <- rbind(results, cbind(feature=i, result))
+  }
+  results$wilcox.fdr <- p.adjust(results$wilcox.p, "fdr")
+  return(results)
+}
+
 median_iqr_group_dunn <- function(x, group, padjust="none", prefix=""){
   dat <- na.omit(data.frame(x=x, group=group))
   x <- dat$x; group=dat$group
