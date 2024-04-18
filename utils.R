@@ -443,10 +443,9 @@ eight_colors=
   "#D55E00", # vermilion
   "#CC79A7") # reddish purple
 
-if(0) {
-c("#E69F00", # orange
+two_colors=
+  c("#E69F00", # orange
   "#0072B2") # blue
-}
 
 # twenty_colors <- c('#e6194b', '#3cb44b', '#ffe119', '#4363d8', 
 # '#f58231', '#911eb4', '#46f0f0', '#f032e6', 
