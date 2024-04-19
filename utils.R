@@ -443,6 +443,13 @@ eight_colors=
   "#D55E00", # vermilion
   "#CC79A7") # reddish purple
 
+four_colors= 
+  c("#E69F00", # orange
+    "#F0E442", # yellow
+  "#0072B2", # blue
+  "#56B4E9" # sky blue
+)
+		   
 two_colors=
   c("#E69F00", # orange
   "#0072B2") # blue
