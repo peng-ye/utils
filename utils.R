@@ -462,6 +462,21 @@ get_phylum_name <- function(x) {
   return(NULL)
 }
 
+# matrix / data.frame
+get_shared_count_prop <- function(sample_list, mat_1, mat_2) {
+  richness <- total_ab <- c()
+  for (f in sample_list) {
+    g1 <- rownames(mat_1)[mat_1[, f]>0]
+    g2 <- rownames(mat_2)[mat_2[, f]>0]
+    idx <- g1 %in% g2
+    richness <- c(richness, sum(idx))
+    total_ab <- c(total_ab, sum(mat_1[idx, f]))
+  }
+  result <- data.frame(richness=richness, abundance=total_ab)
+  rownames(result) <- sample_list
+  return(result)
+}
+
 # color functions/code
 color.bar <- function(lut, min, max=-min, nticks=11, ticks=seq(min, max, len=nticks), title='') {
   scale = (length(lut)-1)/(max-min)
