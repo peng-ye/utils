@@ -299,12 +299,20 @@ glm_OR <- function(mod, digits=2) {
 
 glm_beta <- function(mod, digits=2) {
 smr<-summary(mod)
-res <- cbind(round(cbind(coefficients(mod), confint.default(mod)), digits = digits), 
+res <- cbind(round(cbind(coefficients(mod), confint(mod)), digits = digits), 
       p=sapply(smr$coefficients[,ncol(smr$coefficients)], format_p))
 
 return(res)
 }
 
+lm_beta <- function(mod, digits=2) {
+    smr<-summary(mod)
+    res <- cbind(round(cbind(coefficients(mod), confint.lm(mod)), digits = digits), 
+                 p=sapply(smr$coefficients[,ncol(smr$coefficients)], format_p))
+    
+    return(res)
+}
+		   
 effect_size_p <- function(x) {
   coef_ <- coef(summary(x))
   p_ <- sapply(coef_[,4], format_p)
