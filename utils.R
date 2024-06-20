@@ -305,10 +305,16 @@ res <- cbind(round(cbind(coefficients(mod), confint(mod)), digits = digits),
 return(res)
 }
 
-lm_beta <- function(mod, digits=2) {
+lm_beta <- function(mod, digits=2, raw.p=F) {
     smr<-summary(mod)
+	Ps <- c()
+	if (raw.p) {
+		Ps <- as.numeric(smr$coefficients[,ncol(smr$coefficients)])
+	} else {
+		Ps <- sapply(smr$coefficients[,ncol(smr$coefficients)], format_p)
+	}
     res <- cbind(round(cbind(coefficients(mod), confint.lm(mod)), digits = digits), 
-                 p=sapply(smr$coefficients[,ncol(smr$coefficients)], format_p))
+                 p=Ps)
     
     return(res)
 }
