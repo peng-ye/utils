@@ -1,0 +1,17 @@
+alias lt='ls -lthr'
+alias ll='ls -l'
+alias wl='wc -l'
+alias tp='top -u yepeng'
+alias htp='htop -u yepeng'
+alias le='less -SN'
+alias zle='zless -SN'
+alias rm='rm -r'
+alias hs='history'
+alias lg='logout'
+alias psum="perl -e 'while(<>){\$a+=\$_} print \"\$a\n\"'"
+alias pvert="perl -lane '@_=split; foreach(@_){print}'"
+alias rp='realpath'
+
+# https://opensource.com/article/19/7/bash-aliases
+alias mnt="mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | egrep ^/dev/ | sort"
+alias gh='history|grep'
