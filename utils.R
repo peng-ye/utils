@@ -98,7 +98,12 @@ median_iqr_group_wilcoxon.raw_p <- function(x, group, prefix="", exact=T, paired
   dat <- na.omit(data.frame(x=x, group=group))
   x <- dat$x; group=dat$group
   stats_ <- median_iqr_group(x, group, prefix=prefix)
-  p <- wilcox.test(x~group, paired=paired, exact=exact)$p.value
+  p <- 1
+  if (paired) {
+	  p <- wilcox.test(x~group, paired=paired, exact=exact)$p.value
+  } else {
+	  p <- wilcox.test(x~group, exact=exact)$p.value
+  }
   res <- cbind(stats_, wilcox.p=p)
   return(res)
 }
