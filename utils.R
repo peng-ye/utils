@@ -450,6 +450,13 @@ format_p_list <- function(x) {
 	return(sapply(x, format_p))
 }
 
+signif.num <- function(x) {
+    symnum(x, corr = FALSE, na = FALSE, legend = FALSE,
+           cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+           symbols = c("***", "**", "*", ".", " "))
+}
+# https://stackoverflow.com/questions/41262992/is-there-a-r-function-that-convert-p-value-to-significance-code
+
 # for table1
 # https://cran.r-project.org/web/packages/table1/vignettes/table1-examples.html
 pvalue <- function(x, ...) {
