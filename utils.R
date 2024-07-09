@@ -464,8 +464,12 @@ pvalue <- function(x, ...) {
     y <- unlist(x)
     g <- factor(rep(1:length(x), times=sapply(x, length)))
     if (is.numeric(y)) {
-        # For numeric variables, perform a standard 2-sample t-test
-        p <- t.test(y ~ g)$p.value
+        if (length(unique(g))==2) {
+            # For numeric variables, perform a standard 2-sample t-test
+            p <- t.test(y ~ g)$p.value
+        } else {
+            p <- kruskal.test(y ~ g)$p.value
+        }
     } else {
         # For categorical variables, perform a chi-squared test of independence
         p <- chisq.test(table(y, g))$p.value
