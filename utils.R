@@ -366,6 +366,12 @@ fc <- function(x, y, method="mean", pseudo=1e-5) { # binary only
   return(res)
 }
 
+# Function to calculate the traditional coefficient of variation (CV)
+calc_cv <- function(data) {
+  cv <- (sd(data) / mean(data)) * 100
+  return(cv)
+}
+
 # Get VIP of variables in a PLSDA model
 
 # https://rdrr.io/cran/RVAideMemoire/src/R/PLSDA.VIP.R
