@@ -448,6 +448,8 @@ firstup <- function(x) {
 }
 # https://stackoverflow.com/questions/18509527/first-letter-to-upper-case
 
+paste1 <- function(x1, x2) {paste(x1, x2, sep="-")}
+		   
 # format p values
 format_p <- function(p, digits=3) {
   if (is.na(p)) {return(NA)}
