@@ -297,15 +297,17 @@ function(tab.cont,p.method="fdr") {
 # get beta (95%CI) from regression models
 glm_OR <- function(mod, digits=2) {
   smr <- summary(mod)
-  res <- cbind(round(cbind(OR=exp(coefficients(mod)), exp(confint.default(mod))), digits=digits), 
-        p=sapply(summary(mod)$coefficients[, ncol(smr$coefficients)], format_p))
+  res <- cbind(round(cbind(OR=exp(coefficients(mod)), exp(confint.default(mod))), digits=digits),
+	       p=summary(mod)$coefficients[, ncol(smr$coefficients)],
+        p.fmt=sapply(summary(mod)$coefficients[, ncol(smr$coefficients)], format_p))
   return(res)
 }
 
 glm_beta <- function(mod, digits=2) {
 smr<-summary(mod)
 res <- cbind(round(cbind(coefficients(mod), confint(mod)), digits = digits), 
-      p=sapply(smr$coefficients[,ncol(smr$coefficients)], format_p))
+	     p=smr$coefficients[,ncol(smr$coefficients)],
+      p.fmt=sapply(smr$coefficients[,ncol(smr$coefficients)], format_p))
 
 return(res)
 }
