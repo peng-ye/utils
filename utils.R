@@ -645,6 +645,12 @@ two_colors=
 # https://www.jianshu.com/p/71fc7e2561c4
 # https://www.sci666.com.cn/60850.html
 
+merge_metaphlan_profiles <- function(tab1, tab2) {
+	mp4 <- merge(tab1, tab2, by=c(0, 1), all=TRUE) # rownames = tax_names; column_1 = clade_taxid
+	mp4[is.na(mp4)] <- 0
+	mp4 <- data.frame(mp4, row.names = 1, check.names = F)
+	return(mp4)
+}
 
 # I/O
 write.tsv <- function(df, file, sep = "\t", col.names = NA, ...) {
