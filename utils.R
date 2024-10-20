@@ -350,6 +350,18 @@ res <- cbind(round(cbind(coefficients(mod), confint(mod)), digits = digits),
 return(res)
 }
 
+library(broom.mixed)
+glmer_OR <- function(mod, digits=2) {
+  eff <- data.frame(tidy(mod,conf.int=TRUE,exponentiate=TRUE,effects="fixed"))
+  rownames(eff) <- eff$term
+  res <- cbind(round(cbind(OR=eff$estimate, conf.low=eff$conf.low, conf.high=eff$conf.high), digits=digits),
+	       p=eff$p.value,
+        p.fmt=sapply(eff$p.value, format_p))
+  rownames(res) <- eff$term
+  return(res)
+}
+
+
 lm_beta <- function(mod, digits=2, raw.p=F) {
     smr<-summary(mod)
 	Ps <- c()
