@@ -361,6 +361,29 @@ glmer_OR <- function(mod, digits=2) {
   return(res)
 }
 
+# Function to extract coefficients and p-values from lmer models
+lmer_beta <- function(mod, digits = 2) {
+    # Check if the model is of class 'lmerMod'
+    if (!inherits(mod, "lmerMod")) {
+        stop("The provided model is not an lmer model.")
+    }
+    
+    # Extract coefficients
+    coefs <- coef(summary(as(mod,"merModLmerTest")))
+    
+    # Combine estimates, standard errors, t-values, and p-values
+    res <- cbind(
+        round(coefs[, c("Estimate", "Std. Error", "t value")], digits = digits),
+        p = round(coefs[, "Pr(>|t|)"], digits = digits)
+    )
+    
+    # Format p-values for display
+    res <- as.data.frame(res)
+    colnames(res) <- c("Estimate", "Std_Error", "t_value", "p_value")
+    res$p.fmt <- sapply(res$p_value, format_p)
+    
+    return(res)
+}
 
 lm_beta <- function(mod, digits=2, raw.p=F) {
     smr<-summary(mod)
