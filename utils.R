@@ -600,6 +600,12 @@ get_phylum_name <- function(x) {
   return(NULL)
 }
 
+get_variable_name <- function(var) {
+  # Use substitute to capture the expression and deparse to convert it to a string
+  var_name <- deparse(substitute(var))
+  return(var_name)
+}
+
 # matrix / data.frame
 get_shared_count_prop <- function(sample_list, mat_1, mat_2, details=F) {
   richness <- total_ab <- c()
