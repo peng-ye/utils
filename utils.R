@@ -542,7 +542,7 @@ format_p_list <- function(x) {
 signif.num <- function(x) {
     symnum(x, corr = FALSE, na = FALSE, legend = FALSE,
            cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-           symbols = c("***", "**", "*", ".", " "))
+           symbols = c("***", "**", "*", "·", " "))
 }
 # https://stackoverflow.com/questions/41262992/is-there-a-r-function-that-convert-p-value-to-significance-code
 
@@ -568,6 +568,9 @@ pvalue <- function(x, ...) {
     c("", sub("<", "&lt;", format.pval(p, digits=3, eps=0.001)))
 }
 
+qvalue_matrix <- function(pvalue_matrix, method='fdr') {
+    matrix(p.adjust(as.vector(as.matrix(pvalue_matrix)), method=method),ncol=ncol(pvalue_matrix))
+}
 
 # return the last n characters
 substrRight <- function(x, n){
