@@ -169,6 +169,17 @@ median_iqr_group_dunn <- function(x, group, padjust="none", prefix=""){
   return(res)
 }
 
+median_iqr_group_dunn_unfmtp <- function(x, group, padjust="none", prefix=""){
+  dat <- na.omit(data.frame(x=x, group=group))
+  x <- dat$x; group=dat$group
+  stats_ <- median_iqr_group(x, group, prefix=prefix)
+  res <- dunn.test::dunn.test(x, group, method = padjust)
+  p <- sapply(res$P.adjusted, as.numeric)
+  p.df <- data.frame(t(p)); colnames(p.df) <- res$comparisons
+  res <- cbind(stats_, p.df)
+  return(res)
+}
+
 paired_wilcox_test <- function(df) {
   # df: subject, time, var
   rownames(df) <- paste(df[, 1], df[, 2], sep="-")
