@@ -296,70 +296,88 @@ n.prop.fisher.raw_p <- function(x, group=1, x.lab="", group.lab="", to_return="a
   return(res)
 }
 
-pairwise_fisher_test_wide <- function(x, 
-                                      group,
-                                      x.lab = "Positive",
-                                      simulate.p.value = FALSE,
-                                      p.adjust.method = "holm") {
+all_pairwise_fisher_test <- function(x,
+                                     group,
+                                     positive_level = NULL,
+                                     x.lab = "Positive",
+                                     simulate.p.value = FALSE,
+                                     p.adjust.method = "holm") {
   
   if (length(x) != length(group)) stop("x and group must have same length")
   
   group <- as.character(group)
-  x     <- as.character(x)   # consistent with your n.prop.fisher.raw_p
+  x     <- as.character(x)
   
-  # Get groups in order of appearance
+  # Preserve exact order of appearance
   levs <- unique(group)
   n_lev <- length(levs)
   
   if (n_lev < 2) stop("At least 2 groups required")
   
-  # === 1. Overall summary: n (prop) for all groups ===
-  tb_all <- table(group, x)
-  n_all  <- rowSums(tb_all)
-  prop_all <- round(prop.table(tb_all, margin = 1)[, 2] * 100, 1)   # proportion of second level (usually "1" or positive)
+  # ====================== 1. Overall n (prop) - FIXED ORDER ======================
+  # Force the order of groups using factor
+  group_factor <- factor(group, levels = levs)
+  
+  tb_all <- table(group_factor, x)
+  
+  # Determine positive column
+  if (is.null(positive_level)) {
+    pos_col <- ncol(tb_all)  # last column by default
+  } else {
+    pos_col <- which(colnames(tb_all) == positive_level)
+    if (length(pos_col) == 0) stop(paste("positive_level", positive_level, "not found in data"))
+  }
+  
+  n_all    <- rowSums(tb_all)
+  prop_all <- round(100 * tb_all[, pos_col] / n_all, 1)
   
   overall_stats <- paste0(n_all, " (", prop_all, "%)")
   names(overall_stats) <- paste0(levs, "_n_prop")
   
-  # === 2. Consecutive pairwise Fisher tests ===
-  p_values <- numeric(n_lev - 1)
-  comparisons <- character(n_lev - 1)
+  # ====================== 2. All pairwise comparisons ======================
+  pairs <- combn(levs, 2, simplify = FALSE)
   
-  for (i in 1:(n_lev - 1)) {
-    g1 <- levs[i]
-    g2 <- levs[i+1]
+  p_raw <- numeric(length(pairs))
+  pair_names <- character(length(pairs))
+  
+  for (i in seq_along(pairs)) {
+    g1 <- pairs[[i]][1]
+    g2 <- pairs[[i]][2]
     
     sel <- group %in% c(g1, g2)
-    x_sub  <- x[sel]
-    grp_sub <- group[sel]
     
-    # Use your original function to get the p-value
-    res_pair <- n.prop.fisher.raw_p(x = x_sub, 
-                                    group = grp_sub,
-                                    x.lab = x.lab,
-                                    group.lab = "",
-                                    to_return = "all",
-                                    simulate.p.value = simulate.p.value)
+    res_pair <- n.prop.fisher.raw_p(
+      x = x[sel],
+      group = group[sel],
+      x.lab = x.lab,
+      group.lab = "",
+      to_return = "all",
+      simulate.p.value = simulate.p.value
+    )
     
-    p_values[i]    <- res_pair$fisher.p
-    comparisons[i] <- paste0(g1, " vs ", g2)
+    p_raw[i] <- res_pair$fisher.p
+    pair_names[i] <- paste0(g1, "_vs_", g2)
   }
   
   # Adjust p-values
-  q_values <- p.adjust(p_values, method = p.adjust.method)
-  
-  # === 3. Build final one-row data frame ===
-  result <- as.data.frame(t(overall_stats), stringsAsFactors = FALSE)
-  
-  # Add pairwise p-values and q-values
-  for (i in seq_along(comparisons)) {
-    result[[paste0("p_", comparisons[i])]] <- round(p_values[i], 4)
-    result[[paste0("q_", comparisons[i])]] <- round(q_values[i], 4)
+  if (p.adjust.method == "none") {
+    values <- round(p_raw, 4)
+    prefix <- "p"
+  } else {
+    values <- round(p.adjust(p_raw, method = p.adjust.method), 4)
+    prefix <- "q"
   }
   
-  # Add metadata as attributes
+  # ====================== 3. Build final result ======================
+  result <- as.data.frame(t(overall_stats), stringsAsFactors = FALSE, check.names = FALSE)
+  
+  for (i in seq_along(pair_names)) {
+    result[[paste0(prefix, "_", pair_names[i])]] <- values[i]
+  }
+  
+  attr(result, "positive_level") <- colnames(tb_all)[pos_col]
   attr(result, "p.adjust.method") <- p.adjust.method
-  attr(result, "simulate.p.value") <- simulate.p.value
+  attr(result, "group_levels") <- levs
   
   rownames(result) <- NULL
   
